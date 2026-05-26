@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pedido de Orçamento — Clean & Shine</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #f8fafc;
+      --white:   #ffffff;
+      --dark:    #0f172a;
+      --gray:    #64748b;
+      --border:  #e2e8f0;
+      --blue:    #2563eb;
+      --blue-lt: #eff6ff;
+      --green:   #16a34a;
+      --green-lt:#f0fdf4;
+      --radius:  12px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 16px;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      width: 100%;
+      max-width: 520px;
+      padding: 40px 36px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    .brand-icon {
+      width: 40px; height: 40px;
+      background: var(--blue);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+    .brand-name { font-size: 18px; font-weight: 700; color: var(--dark); }
+    .brand-sub  { font-size: 12px; color: var(--gray); }
+
+    h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .subtitle { font-size: 14px; color: var(--gray); margin-bottom: 32px; }
+
+    .field { margin-bottom: 20px; }
+    label  { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--dark); }
+
+    input, select {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--dark);
+      background: var(--white);
+      transition: border-color 0.15s;
+      -webkit-appearance: none;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--blue);
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      font-size: 14px;
+    }
+    .radio-option:hover { border-color: var(--blue); background: var(--blue-lt); }
+    .radio-option input[type="radio"] { width: auto; margin: 0; accent-color: var(--blue); }
+    .radio-option.selected { border-color: var(--blue); background: var(--blue-lt); }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 14px;
+      background: var(--blue);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      margin-top: 8px;
+    }
+    button[type="submit"]:hover   { opacity: 0.9; }
+    button[type="submit"]:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* Result card */
+    #result {
+      display: none;
+      background: var(--green-lt);
+      border: 1.5px solid #86efac;
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      text-align: center;
+      margin-top: 24px;
+    }
+    #result .check { font-size: 36px; margin-bottom: 12px; }
+    #result h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; color: var(--green); }
+    #result .range {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--dark);
+      margin: 12px 0;
+    }
+    #result p { font-size: 13px; color: var(--gray); line-height: 1.6; }
+    #result .detail {
+      background: #fff;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 16px 0;
+      text-align: left;
+      font-size: 13px;
+      color: var(--gray);
+    }
+    #result .detail span { color: var(--dark); font-weight: 600; }
+
+    .footer {
+      text-align: center;
+      margin-top: 28px;
+      font-size: 12px;
+      color: var(--gray);
+    }
+    .footer a { color: var(--gray); text-decoration: none; }
+    .footer a:hover { color: var(--blue); }
+  </style>
+</head>
+<body>
+<div class="card">
+
+  <div class="brand">
+    <div class="brand-icon">✨</div>
+    <div>
+      <div class="brand-name">Clean &amp; Shine</div>
+      <div class="brand-sub">Serviços de limpeza profissional</div>
+    </div>
+  </div>
+
+  <h1>Pedido de Orçamento</h1>
+  <p class="subtitle">Preencha o formulário e receba uma estimativa em segundos.</p>
+
+  <form id="quoteForm">
+
+    <!-- Contact -->
+    <div class="row">
+      <div class="field">
+        <label for="name">Nome *</label>
+        <input type="text" id="name" name="name" placeholder="Maria Silva" required />
+      </div>
+      <div class="field">
+        <label for="phone">Telefone *</label>
+        <input type="tel" id="phone" name="phone" placeholder="912 345 678" required />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="email">Email *</label>
+      <input type="email" id="email" name="email" placeholder="maria@email.pt" required />
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Property size -->
+    <div class="field">
+      <label for="property_size">Tamanho do imóvel *</label>
+      <select id="property_size" name="property_size" required>
+        <option value="" disabled selected>Selecione o tamanho</option>
+        <option value="Estúdio">Estúdio</option>
+        <option value="T1 - 1 Quarto">T1 — 1 Quarto</option>
+        <option value="T2 - 2 Quartos">T2 — 2 Quartos</option>
+        <option value="T3 - 3 Quartos">T3 — 3 Quartos</option>
+        <option value="T4+ - 4 ou mais">T4+ — 4 ou mais quartos</option>
+      </select>
+    </div>
+
+    <!-- Service type -->
+    <div class="field">
+      <label>Tipo de serviço *</label>
+      <div class="radio-group">
+        <label class="radio-option">
+          <input type="radio" name="service_type" value="Limpeza Regular" required />
+          Limpeza Regular
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="service_type" value="Limpeza Profunda" />
+          Limpeza Profunda <span style="font-size:12px;color:#64748b;margin-left:6px;">(mais completa)</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Extra -->
+    <div class="field">
+      <label>Extra (opcional)</label>
+      <div class="radio-group">
+        <label class="radio-option">
+          <input type="radio" name="extra" value="" />
+          Nenhum
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="extra" value="Limpeza de Janelas" />
+          Limpeza de Janelas <span style="font-size:12px;color:#64748b;margin-left:6px;">(+€20)</span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="extra" value="Engomar Roupa" />
+          Engomar Roupa <span style="font-size:12px;color:#64748b;margin-left:6px;">(+€20)</span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="extra" value="Limpeza do Forno" />
+          Limpeza do Forno <span style="font-size:12px;color:#64748b;margin-left:6px;">(+€25)</span>
+        </label>
+      </div>
+    </div>
+
+    <button type="submit" id="submitBtn">Ver o meu orçamento</button>
+  </form>
+
+  <!-- Result -->
+  <div id="result">
+    <div class="check">✅</div>
+    <h2>O seu orçamento estimado</h2>
+    <div class="range" id="priceRange"></div>
+    <div class="detail" id="summaryDetail"></div>
+    <p>Enviámos os detalhes para o seu email.<br>Entraremos em contacto em breve para confirmar a data.</p>
+  </div>
+
+  <div class="footer">
+    Automatizado por <a href="https://shaingan.com" target="_blank">Shaingan</a>
+  </div>
+</div>
+
+<script>
+  const WEBHOOK = "https://n8n-production-b91e.up.railway.app/webhook/cleaning-quote";
+
+  // Highlight selected radio options
+  document.querySelectorAll('.radio-option input[type="radio"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      radio.closest('.radio-group').querySelectorAll('.radio-option').forEach(o => o.classList.remove('selected'));
+      radio.closest('.radio-option').classList.add('selected');
+    });
+  });
+
+  // Price calc (mirrors n8n Code node logic)
+  function calcPrice(size, service, extra) {
+    const basePrices = {
+      "Estúdio": 45, "T1 - 1 Quarto": 65, "T2 - 2 Quartos": 85,
+      "T3 - 3 Quartos": 110, "T4+ - 4 ou mais": 140,
+    };
+    let price = (basePrices[size] || 85) * (service === "Limpeza Profunda" ? 1.7 : 1.0);
+    if (extra === "Limpeza de Janelas") price += 20;
+    if (extra === "Engomar Roupa")      price += 20;
+    if (extra === "Limpeza do Forno")   price += 25;
+    return { min: Math.round(price * 0.9), max: Math.round(price * 1.1) };
+  }
+
+  document.getElementById('quoteForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'A calcular...';
+
+    const data = {
+      name:          document.getElementById('name').value,
+      email:         document.getElementById('email').value,
+      phone:         document.getElementById('phone').value,
+      property_size: document.getElementById('property_size').value,
+      service_type:  document.querySelector('input[name="service_type"]:checked')?.value || "",
+      extra:         document.querySelector('input[name="extra"]:checked')?.value || "",
+    };
+
+    // Show price instantly (no waiting for n8n)
+    const { min, max } = calcPrice(data.property_size, data.service_type, data.extra);
+    document.getElementById('priceRange').textContent = `€${min} – €${max}`;
+    document.getElementById('summaryDetail').innerHTML =
+      `<span>Serviço:</span> ${data.service_type || "Limpeza Regular"}<br>` +
+      `<span>Imóvel:</span> ${data.property_size}<br>` +
+      `<span>Extra:</span> ${data.extra || "Nenhum"}`;
+
+    document.getElementById('quoteForm').style.display = 'none';
+    document.getElementById('result').style.display = 'block';
+
+    // Submit to n8n in background
+    try {
+      await fetch(WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+    } catch (err) {
+      console.warn('n8n submit failed:', err);
+    }
+  });
+</script>
+</body>
+</html>
