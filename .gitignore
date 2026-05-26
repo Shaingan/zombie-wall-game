@@ -1,0 +1,24 @@
+# Netlify
+.netlify/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Sensitive files
+*.env
+.env*
+secrets.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large data files
+*.csv
+*.xlsx
+*.xls
+
+# Claude local settings
+.claude/settings.local.json
